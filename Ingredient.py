@@ -21,5 +21,11 @@ class Ingredient:
         else:
             raise ValueError("Amount to be removed should be lower than or equal to current quantity")
 
-
+    def __str__(self):
+        return f"{self.name}: {self.quantity} g. Kept at {self.temperature} degrees till {self.expiration_date[0]}-{self.expiration_date[1]-self.expiration_date[2]}"
     
+    def __eq__(self, another):
+        if self.name == another.name and self.quantity == another.quantity and self.expiration_date == another.expiration_date and self.temperature == another.temperature:
+            return True
+        else:
+            return False
