@@ -6,7 +6,7 @@ class Ingredient:
     An ingredient.
     Includes a name, a max temperature at which the product should be kept, an experation date and a quantity.
     """
-    def __init__(self, name: str, max_temperature: int):
+    def __init__(self, name: str, temperature: int):
         """
         Initializes an ingredient object.
 
@@ -15,7 +15,7 @@ class Ingredient:
             max_temperature (int) - Max temperature at which the ingredient should be kept
         """
         self.name = name
-        self.max_temperature = max_temperature
+        self.temperature = temperature
         self.__expiration_date = date.today()
         self.__quantity = 0
 

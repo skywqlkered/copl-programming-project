@@ -1,4 +1,5 @@
 from Ingredient import Ingredient
+from datetime import date
 
 class Shelf():
     """A shelf in which ingredients can be stored.
@@ -48,5 +49,15 @@ class Shelf():
                 return None
         raise ValueError("Ingredient not in shelf.")
     
+    def bad_ingredients(self):
+        """Checks if any ingredients in shelve have expired, either by exceeding expiration date 
+        or not being kept at the right temperature."""
+        bad_ingredients = []
+        today = date.today()
+        for ingredient in bad_ingredients:
+            if ingredient.expiration_date < today or ingredient.temperature <= 8:
+                bad_ingredients.append(ingredient)
+        return bad_ingredients
+
     def __str__(self):
         return f"Shelf has {self.__storage_space} space left and contains: {self._ingredients}"
