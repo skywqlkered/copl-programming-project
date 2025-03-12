@@ -5,14 +5,16 @@ class Shelf():
         self.__storage_space = storage_space
         self._ingredients = []
 
-    @property
-    def storage_space(self):
-        return self.__storage_space
+    def in_shelf(self, check_ingredient: Ingredient):
+        for ingredient in self._ingredients:
+            if ingredient == check_ingredient:
+                return True
+        return False
 
     def storable(self, ingredient: Ingredient):
         if ingredient.__quantity <= self.__storage_space:
             return True
-        else: 
+        else:
             return False
 
     def add_ingredient(self, new_ingredient: Ingredient):
@@ -37,12 +39,6 @@ class Shelf():
                     raise ValueError("There is not this amount of ingredient in the shelf.")
                 return None
         raise ValueError("Ingredient not in shelf.")
-    
-    def in_shelf(self, check_ingredient: Ingredient):
-        for ingredient in self._ingredients:
-            if ingredient == check_ingredient:
-                return True
-        return False
     
     def __str__(self):
         return f"Shelf has {self.__storage_space} space left and contains: {self._ingredients}"
