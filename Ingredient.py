@@ -1,9 +1,9 @@
 from datetime import date
 
 class Ingredient:
-    def __init__(self, name: str, stored_temperature: int):
+    def __init__(self, name: str, max_temperature: int):
         self.name = name
-        self.stored_temperature = stored_temperature
+        self.max_temperature = max_temperature
         self.__expiration_date = date.today()
         self.__quantity = 0
 
@@ -48,5 +48,15 @@ class Ingredient:
             return True
         else:
             return False
+        
+    def __le__(self, another):
+        if self.__quantity <= another.__quantity:
+            return True
+        else:
+            return False
     
-    def 
+    def __ge__(self, another):
+        if self.__quantity >= another._quantity:
+            return True
+        else:
+            return False
