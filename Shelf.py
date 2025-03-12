@@ -1,10 +1,11 @@
 from Ingredient import Ingredient
 
-class Shelve():
+
+class Shelf():
     def __init__(self):
         self._ingredients = []
 
-    def in_shelve(self, check_ingredient: Ingredient):
+    def in_shelf(self, check_ingredient: Ingredient):
         for ingredient in self._ingredients:
             if ingredient == check_ingredient:
                 return True
@@ -19,7 +20,8 @@ class Shelve():
 
     def remove_ingredient(self, ingredient: Ingredient):
         for item in self._ingredients:
-            if item == ingredient:        
+            if item == ingredient:
+                raise NotImplementedError
 
     def __str__(self):
         ingredients = []
