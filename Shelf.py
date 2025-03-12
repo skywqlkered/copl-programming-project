@@ -26,6 +26,7 @@ class Shelf():
             raise ValueError("Not enough space in shelf.")
 
     def remove_ingredient(self, ingredient: Ingredient):
+        # same thing as above if i in list: is way easier
         for item in self._ingredients:
             if item == ingredient:
                 if ingredient <= item:
