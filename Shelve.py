@@ -1,10 +1,10 @@
 from Ingredient import Ingredient
 
-class Shelf():
+class Shelve():
     def __init__(self):
         self._ingredients = []
 
-    def in_shelf(self, check_ingredient: Ingredient):
+    def in_shelve(self, check_ingredient: Ingredient):
         for ingredient in self._ingredients:
             if ingredient == check_ingredient:
                 return True
