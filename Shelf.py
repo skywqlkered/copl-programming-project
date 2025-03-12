@@ -6,7 +6,7 @@ class Shelf():
     Has a storage space."""
     def __init__(self, storage_space):
         """Sets up a shelf object. Arg: storage_space (int) - Amount of storage the shelf has."""
-        self.__storage_space = storage_space
+        self.storage_space = storage_space
         self._ingredients = []
 
     def in_shelf(self, check_ingredient: Ingredient):
@@ -18,19 +18,21 @@ class Shelf():
 
     def storable(self, ingredient: Ingredient):
         """Checks if there is enough space on the shelf for an ingredient."""
-        if ingredient.__quantity <= self.__storage_space:
+        if ingredient.quantity <= self.storage_space:
             return True
         else:
             return False
 
     def add_ingredient(self, new_ingredient: Ingredient):
         """Adds an ingredient to the shelf. Raises a ValueError if there is not enough space."""
-        if self.storable:
+        if self.storable(new_ingredient):
             for ingredient in self._ingredients:
                 if ingredient == new_ingredient:
                     ingredient.add(new_ingredient.quantity)
+                    self.storage_space -= new_ingredient.quantity
                     return None
             self._ingredients.append(new_ingredient)
+            self.storage_space -= new_ingredient.quantity
         else:
             raise ValueError("Not enough space in shelf.")
 
@@ -41,23 +43,36 @@ class Shelf():
         for item in self._ingredients:
             if item == ingredient:
                 if ingredient <= item:
-                    item.remove(ingredient.quantity)
-                    if item.__quantity == 0:
-                        self._ingredients.pop(item)
+                    amount = item.quantity - ingredient.quantity 
+                    self.storage_space += ingredient.quantity
+                    if amount == 0:
+                        self._ingredients.remove(item)
+                        return None
+                    item.quantity = amount 
                 else:
                     raise ValueError("There is not this amount of ingredient in the shelf.")
                 return None
         raise ValueError("Ingredient not in shelf.")
     
     def bad_ingredients(self):
-        """Checks if any ingredients in shelve have expired, either by exceeding expiration date 
-        or not being kept at the right temperature."""
-        bad_ingredients = []
+        """Checks if any ingredients in shelve have gone bad.
+        Returns:
+            expired_ingredients (list of ingredients) - Ingredients that have expired.
+            refrigerator_ingredients (list of ingredients) - Ingredients that should have been kept in a refrigerator
+        """
+        expired_ingredients = []
+        refrigerator_ingredients = []
         today = date.today()
-        for ingredient in bad_ingredients:
-            if ingredient.expiration_date < today or ingredient.temperature <= 8:
-                bad_ingredients.append(ingredient)
-        return bad_ingredients
+        for ingredient in self._ingredients:
+            if ingredient.expiration_date < today:
+                expired_ingredients.append(ingredient)
+            elif ingredient.temperature <= 8:
+                refrigerator_ingredients.append(ingredient)
+        return expired_ingredients, refrigerator_ingredients
 
     def __str__(self):
-        return f"Shelf has {self.__storage_space} space left and contains: {self._ingredients}"
+        str_ingredients = []
+        for item in self._ingredients:
+            str_ingredients.append(str(item))
+        return f"Shelf has {self.storage_space} space left and contains: {str_ingredients}"
+    

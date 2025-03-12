@@ -1,6 +1,5 @@
 from datetime import date
 
-
 class Ingredient:
     """
     An ingredient.
@@ -28,7 +27,7 @@ class Ingredient:
     def quantity(self, quantity):
         """Sets the quantity of an ingredient. 
         Raises a ValueError if quantity is not higher than zero. """
-        if quantity > 0:
+        if quantity >= 0:
             self.__quantity = quantity
         else:
             raise ValueError("Quantity should be higher than zero.")
@@ -43,7 +42,6 @@ class Ingredient:
         """Sets the expiration date of an ingredient.
         If the day is not convertable to a date it raises a ValueError."""
         try:
-            date(day)
             self.__expiration_date = day
         except ValueError:
             raise ValueError("This is not of the form (year, month, day)")
@@ -62,10 +60,10 @@ class Ingredient:
         if amount <= self.__quantity and amount > 0:
             self.__quantity -= amount
         else:
-            raise ValueError(f"Amount not higher than zero or not lower than or equal to current quantity, which is {self.__quantity}")
+            raise ValueError("Amount not higher than zero or not lower than or equal to current quantity")
 
     def __str__(self):
-        return f"{self.name}: {self.quantity} g. Kept at {self.temperature} degrees till {self.expiration_date}"
+        return f"{self.name}: {self.quantity}. Kept at {self.temperature} degrees till {self.expiration_date}"
     
     def __eq__(self, another):
         """Checks if the ingredient is the same.

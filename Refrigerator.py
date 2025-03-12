@@ -25,20 +25,38 @@ class Refrigerator(Shelf):
 
     def storable(self, ingredient: Ingredient):
         """Checks if there is enough space on the shelf for an ingredient. And if the temperature is right."""
-        if ingredient.__quantity <= self.__storage_space:
-            if ingredient.temperature >= self.__temperature-3 or ingredient.temperature <= self.temperature+3:
+        if ingredient.quantity <= self.storage_space:
+            if ingredient.temperature >= self.__temperature-3 and ingredient.temperature <= self.__temperature+3:
                 return True
             else:
                 return False
         else:
             return False
+        
+    def add_ingredient(self, new_ingredient: Ingredient):
+        """Adds an ingredient to the shelf. Raises a ValueError if there is not enough space."""
+        if self.storable(new_ingredient):
+            for ingredient in self._ingredients:
+                if ingredient == new_ingredient:
+                    ingredient.add(new_ingredient.quantity)
+                    self.storage_space -= new_ingredient.quantity
+                    return None
+            self._ingredients.append(new_ingredient)
+            self.storage_space -= new_ingredient.quantity
+        else:
+            raise ValueError("Not enough space in shelf or not right temperature.")
     
     def bad_ingredients(self):
         """Checks if any ingredients in refrigerator have expired."""
         bad_ingredients = []
         today = date.today()
-        for ingredient in bad_ingredients:
+        for ingredient in self._ingredients:
             if ingredient.expiration_date < today:
                 bad_ingredients.append(ingredient)
         return bad_ingredients
     
+    def __str__(self):
+        str_ingredients = []
+        for item in self._ingredients:
+            str_ingredients.append(str(item))
+        return f"Refrigerator has {self.storage_space} space left and contains: {str_ingredients}"
