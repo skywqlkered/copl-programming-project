@@ -31,7 +31,7 @@ class Ingredient:
 
     def add(self, amount: int):
         if amount > 0:
-            self.__quantity
+            self.__quantity += amount
         else:
             raise ValueError("Amount not larger than zero")
 
@@ -43,8 +43,8 @@ class Ingredient:
                 f"Amount not higher than zero or not lower than or equal to current quantity, which is {self.__quantity}")
 
     def __str__(self):
-        return f"{self.name}: {self.quantity} g. Kept at {self.temperature} degrees till {self.expiration_date[0]}-{self.expiration_date[1]-self.expiration_date[2]}"
-
+        return f"{self.name}: {self.quantity} g. Kept at {self.temperature} degrees till {self.expiration_date}"
+    
     def __eq__(self, another):
         if self.name == another.name and self.expiration_date == another.expiration_date and self.temperature == another.temperature:
             return True
@@ -58,7 +58,7 @@ class Ingredient:
             return False
 
     def __ge__(self, another):
-        if self.__quantity >= another._quantity:
+        if self.__quantity >= another.__quantity:
             return True
         else:
             return False
