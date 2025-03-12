@@ -2,9 +2,9 @@ from datetime import date
 
 
 class Ingredient:
-    def __init__(self, name: str, stored_temperature: int):
+    def __init__(self, name: str, max_temperature: int):
         self.name = name
-        self.stored_temperature = stored_temperature
+        self.max_temperature = max_temperature
         self.__expiration_date = date.today()
         self.__quantity = 0
 
@@ -26,7 +26,7 @@ class Ingredient:
         try:
             date(day)
             self.__expiration_date = day
-        except:
+        except ValueError:
             raise ValueError("This is not of the form (year, month, day)")
 
     def add(self, amount: int):
@@ -47,6 +47,18 @@ class Ingredient:
 
     def __eq__(self, another):
         if self.name == another.name and self.expiration_date == another.expiration_date and self.temperature == another.temperature:
+            return True
+        else:
+            return False
+
+    def __le__(self, another):
+        if self.__quantity <= another.__quantity:
+            return True
+        else:
+            return False
+
+    def __ge__(self, another):
+        if self.__quantity >= another._quantity:
             return True
         else:
             return False
