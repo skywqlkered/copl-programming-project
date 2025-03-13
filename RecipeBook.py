@@ -53,6 +53,34 @@ class RecipeBook:
         """
         return list(self.__recipes.keys())
 
+    def search_by_ingredient(self, ingredient_name):
+        """
+        Finds all recipes that contain a specific ingredient.
+
+        Args:
+            ingredient_name (str): The ingredient to search for.
+
+        Returns:
+            list: A list of recipe names that include the ingredient.
+        """
+        matching_recipes = []
+        for recipe in self.__recipes.values():
+            if ingredient_name in (ing for ing in recipe.ingredients()):
+                matching_recipes.append(recipe.name)
+        return matching_recipes
+
+    def recipes_under_time(self, max_time):
+        """
+        Finds all recipes that have a cooking time less than the specified time.
+
+        Args:
+            max_time (int): The maximum cooking time in minutes.
+
+        Returns:
+            list: A list of recipe names that take less than max_time to cook.
+        """
+        return [recipe.name for recipe in self.__recipes.values() if recipe.cooking_time and recipe.cooking_time < max_time]
+
     def __str__(self):
         """Returns a string representation of the recipe book."""
         if not self.__recipes:
