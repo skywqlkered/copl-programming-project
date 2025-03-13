@@ -93,6 +93,36 @@ class Recipe:
                     self.__ingredients[ingredient] = quantity
             except:
                 return
+    
+    def remove_ingredient(self, ingredient: Ingredient | str, quantity: int | float = None):
+        """
+        Removes an ingredient from the recipe.
+        
+        Args:
+            ingredient (Ingredient | str): The ingredient to remove.
+            quantity (int | float, optional): The amount to remove. If not provided, removes the ingredient entirely.
+        
+        Raises:
+            ValueError: If the ingredient is not in the recipe.
+        """
+        try:
+            ingredient_name = ingredient.name if isinstance(ingredient, Ingredient) else ingredient
+        except AttributeError:
+            raise ValueError("Invalid ingredient input.")
+
+        if ingredient_name not in self.__ingredients:
+            raise ValueError(f"Ingredient '{ingredient_name}' not found in the recipe.")
+
+        if quantity is None:
+            # Remove the ingredient completely
+            del self.__ingredients[ingredient_name]
+        else:
+            if not isinstance(quantity, (int, float)):
+                raise ValueError("Quantity must be an integer or a float.")
+            if self.__ingredients[ingredient_name] <= quantity:
+                del self.__ingredients[ingredient_name]
+            else:
+                self.__ingredients[ingredient_name] -= quantity
 
     def add_instruction(self, instruction: str):
         """
@@ -104,6 +134,22 @@ class Recipe:
         """
         if isinstance(instruction, str):
             self.__instructions.append(instruction)
+
+    def remove_instruction(self, step: int):
+        """
+        Removes an instruction from the recipe by its step number (starting from 1).
+        
+        Args:
+            step (int): The step number to remove (1-based index).
+
+        Raises:
+            ValueError: If step is not a valid number or out of range.
+        """
+        if not isinstance(step, int) or step < 1 or step > len(self.__instructions):
+            raise ValueError(f"Invalid step number. Must be between 1 and {len(self.__instructions)}.")
+
+        # Convert 1-based index to 0-based index and remove the instruction
+        del self.__instructions[step - 1]
 
     def for_persons(self, people_count: int):
         """Returns a string representation of the recipe for a certain number of people."""
