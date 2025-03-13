@@ -14,11 +14,13 @@ class Recipe:
             cooking_time (int) (optional): The time it takes to cook the recipe in minutes.
         """
 
+        # Check if the input for people_count is valid
         if isinstance(people_count, int) or isinstance(people_count, type(None)):
             self.__people_count = people_count
         else:
             raise ValueError(f"Cooking time must be an integer or None. (currently {type(cooking_time)}: {cooking_time})")
 
+        # Check if the input for cooking_time is valid
         if isinstance(cooking_time, int) or isinstance(cooking_time, type(None)):
             self.__cooking_time = cooking_time
         else:
@@ -67,7 +69,7 @@ class Recipe:
         else:
             raise ValueError(f"Cooking time must be an integer. (currently {type(time)}: {time})")
 
-    def add_ingredient(self, ingredient: Ingredient, quantity: int | float):
+    def add_ingredient(self, ingredient: Ingredient | str, quantity: int | float):
         """
         Adds an ingredient to the recipe.
         Does nothing if the inputs are invalid.
@@ -84,7 +86,13 @@ class Recipe:
             else:
                 self.__ingredients[ingredient.name] = quantity
         except:
-            return
+            try:
+                if ingredient in self.__ingredients:
+                    self.__ingredients[ingredient] += quantity
+                else:
+                    self.__ingredients[ingredient] = quantity
+            except:
+                return
 
     def add_instruction(self, instruction: str):
         """
@@ -138,3 +146,49 @@ class Recipe:
 
     def __str__(self):
         return self.__print_str(self.__people_count)
+
+    def __eq__(self, another):
+        """Checks if two recipes are the same."""
+        if self.name == another.name and self.__people_count == another.__people_count and self.__cooking_time == another.__cooking_time and self.__ingredients == another.__ingredients and self.__instructions == another.__instructions:
+            return True
+        else:
+            return False
+    
+    def __ne__(self, another):
+        """Checks if two recipes aren't the same."""
+        if self.name == another.name and self.__people_count == another.__people_count and self.__cooking_time == another.__cooking_time and self.__ingredients == another.__ingredients and self.__instructions == another.__instructions:
+            return False
+        else:
+            return True
+
+    def __create_new_recipe(self, people_count: int):
+        """Creates a new recipe for a different amount of people."""
+        new_recipe = Recipe(self.name, people_count, self.__cooking_time)
+        for ingredient, amount in self.ingredients(people_count).items():
+            new_recipe.add_ingredient(ingredient, amount)
+        for instruction in self.__instructions:
+            new_recipe.add_instruction(instruction)
+        return new_recipe
+
+    def __truediv__(self, divider: int):
+        """Changes the ingredient amount"""
+        if self.__people_count % divider != 0:
+            raise ValueError("The divider must be a divisor of the people count.")
+        new_recipe = self.__create_new_recipe(self.__people_count//divider)
+        return new_recipe
+
+    def __mul__(self, multiplier: int):
+        """Changes the ingredient amount"""
+        people_count = self.__people_count*multiplier
+        if multiplier*self.__people_count % 1 != 0:
+            raise ValueError("The resulting people count must be an integer.")
+        new_recipe = self.__create_new_recipe(int(people_count))
+        return new_recipe
+
+    def __rmul__(self, multiplier: int):
+        """Changes the ingredient amount"""
+        people_count = self.__people_count*multiplier
+        if multiplier*self.__people_count % 1 != 0:
+            raise ValueError("The resulting people count must be an integer.")
+        new_recipe = self.__create_new_recipe(int(people_count))
+        return new_recipe
