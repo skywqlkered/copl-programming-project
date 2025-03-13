@@ -1,5 +1,4 @@
 from Recipe import Recipe
-from Ingredient import Ingredient
 
 class RecipeBook:
     """
