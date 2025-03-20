@@ -5,11 +5,7 @@ class MealPlan:
     """Class containing methods to plan meals for a person"""
     def __init__(self):
         pass
-
-class GroupMealPlan(MealPlan):
-    """
-    Class containing methods to plan meals for gorups
-    Inherits from MealPlan
-    """
-    def __init__(self):
-        super().__init__()
+        # Protected variable
+    
+    # @classmethod
+    # @staticmethod
