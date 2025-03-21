@@ -8,11 +8,19 @@ class User:
         self._recipebooks = []
 
     def add_shoppinglist(self, shoppinglist: Shoppinglist):
+        """
+        Adds a shopping list to the user's collection.
+
+        Args:
+            shoppinglist (Shoppinglist): The shopping list to add.
+        """
+
         if shoppinglist not in self._shoppinglists:
             self._shoppinglists.append(shoppinglist)
 
     def add_recipebook(self, recipebook: RecipeBook):
-        self._recipebooks.append(recipebook)
+        if recipebook not in self._recipebooks:
+            self._recipebooks.append(recipebook)
 
 
 
