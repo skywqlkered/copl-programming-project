@@ -89,3 +89,6 @@ class Ingredient:
         
     def __repr__(self):
         return self.name
+
+    def __hash__(self):
+        return hash(self.name)
