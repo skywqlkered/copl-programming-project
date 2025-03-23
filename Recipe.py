@@ -36,6 +36,9 @@ class Recipe:
         
         Args:
             people_count (int) (optional): The number of people the recipe is for.
+        
+        Returns:
+            dict: a dictionary containing ingredients as keys and quantities as values
         """
         if people_count != None:
             ingredients = {}

@@ -39,7 +39,7 @@ class RecipeBook:
             recipe_name (str): The name of the recipe to find.
 
         Returns:
-            Recipe or None: The recipe if found, otherwise None.
+            Recipe: The recipe if found, otherwise None.
         """
         return self.__recipes.get(recipe_name, None)
 
