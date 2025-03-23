@@ -5,7 +5,7 @@ class Ingredient:
     An ingredient.
     Includes a name, a max temperature at which the product should be kept, an experation date and a quantity.
     """
-    def __init__(self, name: str, temperature: int):
+    def __init__(self, name: str, temperature: int = float('inf')):
         """
         Initializes an ingredient object.
 
