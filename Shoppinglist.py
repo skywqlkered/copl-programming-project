@@ -86,7 +86,7 @@ class Shoppinglist:
             list: A list of ingredient names.
         """
 
-        return [ingredient.name for ingredient in self.ingredients]
+        return str([ingredient.name for ingredient in self.ingredients])
 
     def __add__(self, another):
         """
