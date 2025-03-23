@@ -6,13 +6,15 @@ from Ingredient import Ingredient
 class MealPlan:
     """Class containing methods to plan meals for a person"""
 
-    def __init__(self, user: User, days: int = 7):
+    standard_week = 7
+
+    def __init__(self, user: User, days: int = standard_week):
         """
         Initializes a MealPlan for a user.
 
         Args:
             user (User): A user for whom the Mealplan is.
-            days (int, optional): The amount of days to plan, starting on monday. Defaults to 7 (a full week).
+            days (int, optional): The amount of days to plan, starting on monday. Defaults to standard_week (a full week).
         """
         self.user = user
         self._days = days
