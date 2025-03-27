@@ -61,6 +61,10 @@ class Recipe:
 
         return self.__cooking_time
 
+    @property
+    def people_count(self):
+        return self.__people_count
+
     @cooking_time.setter
     def cooking_time(self, time: int):
         """
