@@ -23,6 +23,24 @@ class User:
         self._shoppinglist: Shoppinglist = Shoppinglist()
         self.__recipebook: RecipeBook = RecipeBook()
         self.storage: dict[Refrigerator, Shelf] = {"refrigerator": None, "shelf": None}
+        self.__password = None
+        self.__birthplace = None
+
+    @property
+    def password(self):
+        return self.__password
+    
+    @password.setter
+    def password(self, password):
+        self.__password = password
+
+    @property
+    def birthplace(self):
+        return self.__birthplace
+    
+    @birthplace.setter
+    def birthplace(self, birthplace):
+        self.__birthplace = birthplace
 
     def add_recipebook(self, new_recipbebook: RecipeBook):
         """
@@ -108,3 +126,13 @@ class User:
         """
         if self.storage["shelf"] == shelf:
             self.storage["shelf"] = None
+
+
+    def __str__(self):
+        """
+        Returns a string representation of the user.
+
+        Returns:
+            str: A string representation of the user.
+        """
+        return f"User: {self.name}"

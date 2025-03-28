@@ -445,60 +445,6 @@ class Backend:
             print("\nIngredient removed from shoppinglist.\n")
         except KeyError:
             print("\nIngredient not found in shoppinglist.\n")
-    if __name__ == "__main__":
-        # a = Interface()
 
-        # recipe = Recipe("apple pie", 3)
-        # recipe.add_ingredient(Ingredient("apple"), 32)
-        # recipe.add_instruction("Bake the pie")
-        # recipe.add_instruction("Cut the pie")
-
-        # rock = Recipe("Rock", 18)
-        # rock.add_ingredient(Ingredient("dirt"), 60)
-        # rock.cooking_time = 180
-        # rock.add_instruction("Dig a hole")
-        # rock.add_instruction("Gather the dirt and rocks")
-        # rock.add_instruction("Mix and enjoy")
-
-        # recipeBook = RecipeBook()
-        # recipeBook.add_recipe(recipe)
-        # recipeBook.add_recipe(rock)
-
-        # ing = Ingredient("apple")
-        # ing.quantity = 6
-        # ing.expiration_date = datetime.today()
-        # ing.temperature = 5
-
-        # frige = Refrigerator(8)
-        # frige.add_ingredient(ing)
-
-        # a.user = User("Marc")
-        # a.user.mealplan = MealPlan()
-        # a.user.mealplan.add_meal("Monday", recipe)
-        # a.user.mealplan.add_meal("Tuesday", rock)
-        # a.user.add_recipebook(recipeBook)
-        # a.user._shoppinglist = Shoppinglist()
-        # a.user._shoppinglist.add_ingredient(ing, 7)
-        # a.user.add_refrigerator(frige)
-
-        # a.save_userinstance()
-
-        # a = Interface()
-        # userdata: dict = a.get_userinstance("Marc")
-
-
-        # Marc = User(userdata["name"])
-        # a._set_storage_of_user(Marc)
-
-        # print(Marc.storage)
-        j = User("John")
-        j.add_refrigerator(Refrigerator(1000))
-
-        banana = Ingredient("banana", temperature=4)
-        banana.expiration_date = datetime.now()
-        banana.quantity = 5
-
-        # j.storage["refrigerators"][0].add_ingredient(banana)
-        print(j.has_item())
-        print(j.has_item("banana"))
-        print(j.has_item("apple"))
+    def __str__(self):
+        return f"{self.user}"

@@ -79,4 +79,5 @@ class Json:
         }
         return json.dumps(formatted_data, indent=4)
 
-
+    def __str__(self):
+        return str(self.data)
