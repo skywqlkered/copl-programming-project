@@ -8,7 +8,7 @@ class Shoppinglist:
 
         The shopping list is a dictionary where the keys are Ingredient objects and the values are the amount of that ingredient.
         """
-        self.ingredients: dict[Ingredient, int] = {}
+        self.ingredients: dict[str, tuple[list, int]] = {}
 
     def add_ingredient(self, ingredient: Ingredient, amount: int):
         """
@@ -21,12 +21,22 @@ class Shoppinglist:
         Raises:
             ValueError: If the amount is 0 or less.
         """
+        
         if amount <= 0:
             raise ValueError("Cannot add 0 or less of an item")
-        if ingredient in self.ingredients:
-            self.ingredients[ingredient] += amount
+        if ingredient.name in self.ingredients:
+            existing = self.ingredients[ingredient.name]
+            existing_amount = existing[1]
+            new_amount = existing_amount + amount
+            self.ingredients[ingredient.name] = ([ingredient.temperature,
+                                                ingredient.expiration_date,
+                                                ingredient.quantity],
+                                                new_amount)
         else:
-            self.ingredients[ingredient] = amount
+            self.ingredients[ingredient.name] = ([ingredient.temperature, 
+                                                ingredient.expiration_date, 
+                                                ingredient.quantity], 
+                                                amount)
 
     def _handle_remove(self, name: str):
         """
@@ -56,8 +66,14 @@ class Shoppinglist:
             KeyError: If the ingredient is not found in the shoppinglist.
         """
         if amount:
-            self.ingredients[name] -= amount
-            if self.ingredients[name] <= 0:
+            existing = self.ingredients[name]
+            existing_amount = existing[1]
+            new_amount = existing_amount - amount
+            self.ingredients[name] = ([existing.temperature,
+                                                existing.expiration_date,
+                                                existing.quantity],
+                                                new_amount)
+            if new_amount <= 0:
                 self._handle_remove(name)
 
         else:
@@ -74,8 +90,9 @@ class Shoppinglist:
         if len(self.ingredients) == 0:
             return "Wow, such empty"
         for i in range(len(self.ingredients)):
-            return_str += f"{list(self.ingredients.keys())[i].name}: {list(self.ingredients.values())[i]}, "
+            return_str += f"{list(self.ingredients.keys())[i]}: {list(self.ingredients.values())[0][1]}, "
         return f"Shoppinglist: {return_str}"
+    
 
     def __repr__(self):
 
@@ -86,9 +103,9 @@ class Shoppinglist:
             list: A list of ingredient names.
         """
 
-        return str([ingredient.name for ingredient in self.ingredients])
+        return str([ingredient for ingredient in self.ingredients.keys()])
 
-    def __add__(self, another):
+    def __add__(self, another: 'Shoppinglist'):
         """
         Adds two shopping lists together.
 
@@ -103,10 +120,11 @@ class Shoppinglist:
             if i not in added:
                 added[i] = another.ingredients[i]
             else:
-                added[i] += another.ingredients[i]
+                existing = added[i]
+                added[i] = existing[0], existing[1] + another.ingredients[i][1]
         return added
 
-    def __sub__(self, another):
+    def __sub__(self, another: 'Shoppinglist'):
         """
         Subtracts the ingredients in another shopping list from this one.
 
@@ -119,8 +137,10 @@ class Shoppinglist:
         added: dict = self.ingredients.copy()
         for i in another.ingredients:
             if i in added:
-                added[i] -= another.ingredients[i]
-                if added[i] <= 0:
+                existing = added[i]
+                added[i] = existing[0], existing[1] - another.ingredients[i][1]
+                
+                if added[i][1] <= 0:
                     del added[i]
         return added
 
@@ -149,3 +169,4 @@ class Shoppinglist:
     def __rmul__(self, multipier):
         """see __mul__"""
         return self.__mul__(multipier)
+

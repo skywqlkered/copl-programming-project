@@ -8,6 +8,10 @@ class RecipeBook:
         """Initializes an empty recipe book."""
         self.__recipes = {}
 
+    @property
+    def recipes(self):
+        return self.__recipes
+
     def add_recipe(self, recipe):
         """
         Adds a recipe to the recipe book.

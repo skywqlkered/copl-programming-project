@@ -18,7 +18,7 @@ class Recipe:
         if isinstance(people_count, int) or isinstance(people_count, type(None)):
             self.__people_count = people_count
         else:
-            raise ValueError(f"Cooking time must be an integer or None. (currently {type(cooking_time)}: {cooking_time})")
+            raise ValueError(f"People count must be an integer or None. (currently {type(people_count)}: {people_count})")
 
         # Check if the input for cooking_time is valid
         if isinstance(cooking_time, int) or isinstance(cooking_time, type(None)):
@@ -27,8 +27,8 @@ class Recipe:
             raise ValueError(f"Cooking time must be an integer or None. (currently {type(cooking_time)}: {cooking_time})")
         
         self.name = name
-        self.__ingredients = {}
-        self.__instructions = []
+        self.__ingredients: dict[Ingredient] = {}
+        self.__instructions: list[str] = []
 
     def ingredients(self, people_count: int = None):
         """
@@ -56,6 +56,10 @@ class Recipe:
         return self.__instructions
     
     @property
+    def people_count(self):
+        return self.__people_count
+
+    @property
     def cooking_time(self):
         """Returns the time it takes to cook the recipe in minutes. (None if not specified)"""
 
@@ -78,7 +82,7 @@ class Recipe:
         Does nothing if the inputs are invalid.
 
         Args:
-            ingredient (Ingredient): An ingredient.
+            ingredient (Ingredient | str): An ingredient.
             quantity (int | float): The amount of the ingredient needed for the recipe.
         """
         try:

@@ -7,7 +7,7 @@ class Shelf():
     def __init__(self, storage_space):
         """Sets up a shelf object. Arg: storage_space (int) - Amount of storage the shelf has."""
         self.storage_space = storage_space
-        self._ingredients = []
+        self._ingredients: list[str, int, date, int] = []
 
     def in_shelf(self, check_ingredient: Ingredient):
         """Checks if a certain ingredient is already in the shelf."""
@@ -76,3 +76,5 @@ class Shelf():
             str_ingredients.append(str(item))
         return f"Shelf has {self.storage_space} space left and contains: {str_ingredients}"
     
+    def __repr__(self):
+        return f"Shelf({self.storage_space})"

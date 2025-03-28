@@ -12,6 +12,7 @@ class Refrigerator(Shelf):
     def temperature(self):
         "Gets the temperature of the refrigerator."
         return self.__temperature
+
     
     @temperature.setter
     def temperature(self, temperature: int):
@@ -55,7 +56,9 @@ class Refrigerator(Shelf):
             if ingredient.expiration_date < today:
                 bad_ingredients.append(ingredient)
         return bad_ingredients
+
     
+
     def __str__(self):
         str_ingredients = []
         for item in self._ingredients:

@@ -1,5 +1,4 @@
 from Recipe import Recipe
-from User import User
 from Shoppinglist import Shoppinglist
 from Ingredient import Ingredient
 
@@ -8,7 +7,7 @@ class MealPlan:
 
     standard_week = 7
 
-    def __init__(self, user: User, days: int = standard_week):
+    def __init__(self, days: int = standard_week):
         """
         Initializes a MealPlan for a user.
 
@@ -16,9 +15,8 @@ class MealPlan:
             user (User): A user for whom the Mealplan is.
             days (int, optional): The amount of days to plan, starting on monday. Defaults to standard_week (a full week).
         """
-        self.user = user
         self._days = days
-        self.meals = {}
+        self.meals: dict[str, Recipe] = {}
         self._initialize_days()
 
     def _initialize_days(self):
@@ -61,10 +59,6 @@ class MealPlan:
             shopping_list.add_ingredient(Ingredient(ingredient), quantity)
         return shopping_list
 
-    def save_shoppinglist_to_user(self):
-        """saves the shoppinglist to the user that created the mealplan"""
-        self.user.add_shoppinglist(self.generate_shopping_list())
-
     @staticmethod
     def calculate_total_cooking_time(meal_plan):
         """
@@ -80,14 +74,14 @@ class MealPlan:
         return total_time
 
     @classmethod
-    def create_short_plan(cls, user: User):
+    def create_short_plan(cls):
         """
         Creates a meal plan for 3 days.
         
         Returns:
             MealPlan: A mealplan instance for 3 days
         """
-        return cls(user, days=3)
+        return cls(days=3)
 
     def __str__(self):
         """
@@ -103,3 +97,17 @@ class MealPlan:
             else:
                 plan_string += f"{day}: No meal planned.\n"
         return plan_string
+    
+    def __repr__(self):
+        """
+        Returns a string representation of the meal plan.
+        
+        Returns:
+            str: A string representation of the meal plan.
+        """ 
+        mealplan = []
+        for i, k in self.meals.items():
+            mealplan.append((i, k))
+        return str(mealplan)
+
+
