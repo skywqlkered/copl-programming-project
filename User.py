@@ -31,8 +31,8 @@ class User:
         Args:
             recipebook (RecipeBook): The recipebook to add.
         """
-        if self.recipebook != new_recipbebook:
-            self.storage["shelf"] = new_recipbebook
+        if self.__recipebook != new_recipbebook:
+            self.__recipebook = new_recipbebook
 
 
     def rem_recipebook(self, new_recipebook: RecipeBook):
@@ -42,8 +42,8 @@ class User:
         Args:
             recipebook (RecipeBook): The recipebook to remove.
         """
-        if self.recipebook == new_recipebook:
-            self.storage["shelf"] = None
+        if self.__recipebook == new_recipebook:
+            self.__recipebook = None
 
     @property
     def recipebook(self):

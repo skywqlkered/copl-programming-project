@@ -69,10 +69,7 @@ class Shoppinglist:
             existing = self.ingredients[name]
             existing_amount = existing[1]
             new_amount = existing_amount - amount
-            self.ingredients[name] = ([existing.temperature,
-                                                existing.expiration_date,
-                                                existing.quantity],
-                                                new_amount)
+            self.ingredients[name] = (existing[0], new_amount)
             if new_amount <= 0:
                 self._handle_remove(name)
 

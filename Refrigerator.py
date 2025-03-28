@@ -1,6 +1,6 @@
 from Shelf import Shelf
 from Ingredient import Ingredient
-from datetime import date
+from datetime import datetime
 
 class Refrigerator(Shelf):
     def __init__(self, storage_space: int):
@@ -51,7 +51,7 @@ class Refrigerator(Shelf):
     def bad_ingredients(self):
         """Checks if any ingredients in refrigerator have expired."""
         bad_ingredients = []
-        today = date.today()
+        today = datetime.today()
         for ingredient in self._ingredients:
             if ingredient.expiration_date < today:
                 bad_ingredients.append(ingredient)

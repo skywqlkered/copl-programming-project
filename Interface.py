@@ -96,7 +96,7 @@ class Interface(Backend):
 
         if choice == 1:
             r = self.create_recipe()
-            self.user.recipebook[0].add_recipe(r)
+            self.user.recipebook.add_recipe(r)
             print(f"\nRecipe {r.name} created!\n")
             self.recipe_choice()
         elif choice == 2:
@@ -108,7 +108,7 @@ class Interface(Backend):
                     break
                 elif choise == 2:
                     r = self.create_recipe()
-                    self.user.recipebook[0].add_recipe(r)
+                    self.user.recipebook.add_recipe(r)
                     print(f"\nRecipe {r.name} created!\n")
                     self.recipe_choice(2)
                     break
@@ -121,16 +121,42 @@ class Interface(Backend):
             self.remove_recipe_from_recipebook()
             self.recipe_choice()
         elif choice == 4:
-            self.find_recipe_by_name()
+            rep = self.find_recipe_by_name()
+            print("\nRecipe:\n")
+            print(rep)
             self.recipe_choice()
         elif choice == 5:
-            self.find_recipe_by_ingredient()
+            rlist = self.find_recipe_by_ingredient()
+            if rlist:
+                print("\nRecipe list:")
+                for recipe in rlist:
+                    print(f"\t{recipe}")
+                print("")
+            else:
+                print("\nNo recipes found\n")
+
             self.recipe_choice()
         elif choice == 6:
-            self.find_recipe_by_cooking_time()
+            rlist = self.find_recipe_by_time()
+            if rlist:
+                print("\nRecipe list:")
+                for recipe in rlist:
+                    print(f"\t{recipe}")
+                print("")
+            else:
+                print("\nNo recipes found\n")
+
             self.recipe_choice()
         elif choice == 7:
-            all = self.list_all_recipes()
+            all: list = self.list_all_recipes()
+            if all:
+                print("\nRecipe list:")
+                for recipe in all:
+                    print(f"\t{recipe}")
+                print("")
+            else:
+                print("\nNo recipes found\n")
+
             self.recipe_choice()
             print("\nRecipe list:")
             for recipe in all:
@@ -219,11 +245,11 @@ class Interface(Backend):
         choice = self.choice_loop(choice, 5)
 
         if choice ==1:
-            self.add_ingredient_shopping_list
+            self.add_ingredient_shopping_list()
         elif choice ==2:
-            self.remove_ingredient_shopping_list
+            self.remove_ingredient_shopping_list()
         elif choice ==3:
-            print(self.user._shoppinglist)
+            print(f"\n{self.user._shoppinglist}\n")
         elif choice ==4:
             self.user_choice()
         elif choice ==5:
@@ -275,11 +301,11 @@ class Interface(Backend):
             raise KeyError("User not found")
         user = User(userdata["name"])
         self.setup_all(user)
+
         print(f"\nWelcome {user.name}")
         self.user = user
         return self.user
 
 
 a = Interface()
-print()
 

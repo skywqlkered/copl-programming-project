@@ -7,7 +7,7 @@ from Shelf import Shelf
 from Recipe import Recipe # add ingredient, remove ingredient
 from Ingredient import Ingredient # add item, remove item
 from MealPlan import MealPlan # add recipe, remove recipe
-from datetime import datetime, date
+from datetime import datetime
 
 class Backend:
     def __init__(self):
@@ -101,9 +101,9 @@ class Backend:
     def _set_storage_of_user(self, user: User):
         userdata: dict = self.get_userinstance(user.name)
         for storage_type, value in userdata["storage"].items():
-            if storage_type == "refrigerator":	
+            if storage_type == "refrigerator" and value:	
                 used_space = 0                
-                if len(value) > 0:
+                if len(value[1]) > 0:
                     for name, ingredient in value[1].items():
                         ing = Ingredient(name, ingredient[0])
                         ing.expiration_date = datetime.strptime(ingredient[1], "%Y-%m-%d")
@@ -113,7 +113,11 @@ class Backend:
                     a.add_ingredient(ing)
                     a.temperature = value[2]
                     user.add_refrigerator(a)
-            elif storage_type == "shelf":
+                else:
+                    a = Refrigerator(value[0])
+                    a.temperature = value[2]
+                    user.add_refrigerator(a)
+            elif storage_type == "shelf" and value:
                 used_space = 0
                 if len(value) > 0:
                     for name, ingredient in value[1].items():
@@ -123,6 +127,9 @@ class Backend:
                         used_space += ing.quantity
                     a = Shelf(value[0])
                     a.add_ingredient(ing)
+                    user.add_shelf(a)
+                else:
+                    a = Shelf(value[0])
                     user.add_shelf(a)
 
     def setup_all(self, user: User):
@@ -216,9 +223,9 @@ class Backend:
             print(f"\n Please enter a number between {min_value} and {max_value}\n")
     def add_recipe_to_recipebook(self):
         print("What recipe would you like to add?")
-        recipes: list[Recipe] = self.list_all_recipes(True)
+        recipes: list[str] = self.list_all_recipes()
         for i, recipe in enumerate(recipes):
-            print(f"{i+1}. {recipe}")
+            print(f"{i+1}. {recipe.name}")
 
         while True:
             choice = input("Enter the number of the recipe you want to add: ")
@@ -244,13 +251,13 @@ class Backend:
 
     def find_recipe_by_ingredient(self):
         ingname = input("Enter the name of the ingredient you want to search for : ")
-        return self.user.recipebook.find_recipe_by_ingredient(ingname)
+        return self.user.recipebook.search_by_ingredient(ingname)
     
     def find_recipe_by_time(self, time=None):
         while not time:
             time = input("Enter the time you want to search for: ")
             time = self.int_try(time)
-        return self.user.recipebook.find_recipe_by_time(time)
+        return self.user.recipebook.recipes_under_time(time)
 
 
     def list_all_recipes(self) -> list[Recipe]:
@@ -264,7 +271,7 @@ class Backend:
             list: A list of recipe names.
         """
         full_list = []
-        for recipe in self.user.recipebook.recipes:
+        for rname, recipe in self.user.recipebook.recipes.items():
             full_list.append(recipe)
         return full_list
     
@@ -283,7 +290,7 @@ class Backend:
             print("Enter temperature of the refrigerator:")
             temperature = self.int_value_try(input(), 0, 8)
         refrigerator = Refrigerator(storage_space)
-        refrigerator.temperature(temperature)
+        refrigerator.temperature = temperature
         self.user.add_refrigerator(refrigerator)
 
     def add_ingredient_storage(self, temperature = None, date = None):
@@ -299,6 +306,7 @@ class Backend:
             day = input("Day: ")
             try:
                 ingredient.expiration_date = datetime.strptime(f"{year}-{month}-{day}", "%Y-%m-%d")
+                date = True
             except: #noqa
                 print("\nEnter valid experation date.\n")
         
@@ -312,29 +320,58 @@ class Backend:
                     print("Ingredient added to shelf.")
                 except ValueError:
                     print("Shelf is full.")
+                except AttributeError:
+                    print("You have no shelf yet.")
+            except AttributeError:
+                print("You have no refrigerator yet.")
 
     def remove_ingredient_from_storage(self):
         ingredient = self.ingredient_maker()
-        self.user.storage["shelf"].remove_ingredient(ingredient)
+        try:
+            self.user.storage["shelf"].remove_ingredient(ingredient)
+            
+        except AttributeError:
+            try:
+                self.user.storage["refrigerator"].remove_ingredient(ingredient)
+                
+            except AttributeError:
+                print("This item is not in your storage.")
+        
 
     def check_bad_ingredients(self):
         #shelf
-        expired_ingredients, refrigerator_ingredients = self.user.storage["refrigerator"].bad_ingredients()
-        print("Expired ingredients in shelf:")
-        for ingredient in expired_ingredients():
-            print(ingredient)
-        print("Ingredients in shelf that should be in refrigerator:")
-        for ingredient in refrigerator_ingredients:
-            print(ingredient)
-        
-        #refrigerator
-        bad_ingredients = self.user.storage["refrigerator"].bad_ingredients()
-        print("Expired ingredients in refrigerator:")
-        for ingredient in bad_ingredients:
-            print(ingredient)
+        if self.user.storage["shelf"]:
+            if len(self.user.storage["shelf"].bad_ingredients()) != 0:
+                expired_ingredients, refrigerator_ingredients = self.user.storage["shelf"].bad_ingredients()
+                print("Expired ingredients in shelf:")
+                for ingredient in expired_ingredients:
+                    print(ingredient)
+                print("Ingredients in shelf that should be in refrigerator:")
+                for ingredient in refrigerator_ingredients:
+                    print(ingredient)
+            else: 
+                print("No expired ingredients in shelf.")
+        else:
+            print("You have no shelf yet.")
 
-    def create_mealplan(self):
-        days = input("Enter the number of days you want to plan: ")
+        #refrigerator
+        if self.user.storage["refrigerator"]:
+            if len(self.user.storage["refrigerator"].bad_ingredients()) != 0:
+
+                bad_ingredients = self.user.storage["refrigerator"].bad_ingredients()
+                print("Expired ingredients in refrigerator:")
+                for ingredient in bad_ingredients:
+                    print(ingredient)
+
+            else:
+                print("No expired ingredients in refrigerator.")
+        else:
+            print("You have no fridge yet.")
+
+    def create_mealplan(self, days=None):
+        while not days:
+            days = input("Enter the number of days you want to plan: ")
+            days = self.int_try(days)
         self.user.mealplan = MealPlan(days)
 
         while True:
@@ -345,6 +382,10 @@ class Backend:
                 break
     
     def add_recipe_to_mealplan(self):
+        daychoice = input("For which day would you like to add a recipe: ")
+        while daychoice not in self.user.mealplan.meals.keys():
+            daychoice = input("Enter a valid day: ")
+        
         choice = input("How would you like to add a recipe:\n1. By name\n2. By ingredient\n3. By time\n")
         while True:
             if choice == "1":
@@ -357,7 +398,7 @@ class Backend:
                 recipe = self.find_recipe_by_time()
                 break
         
-        self.user.mealplan.add_recipe(recipe)
+        self.user.mealplan.add_meal(recipe)
 
     def remove_recipe_from_mealplan(self):
         found_recipe = self.find_recipe_by_name()

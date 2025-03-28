@@ -1,6 +1,5 @@
 
 import json
-import os
 
 class Json:
     def __init__(self):
@@ -37,7 +36,6 @@ class Json:
     def _format(self, *args):
         if len(args[0]) != 5:
             raise ValueError("Data must be a tuple of 5 elements.")
-        
         user = args[0][0]
         mealprep = args[0][1]
         shoppinglist = args[0][2]
@@ -67,9 +65,9 @@ class Json:
             if storage:
                 for ingredient in storage._ingredients:
                     formatted_ing[ingredient.name] = [ingredient.temperature, (str(ingredient.expiration_date)).split(" ")[0], ingredient.quantity]
-                if storage.temperature:
+                try:
                     formatted_storage[storage_type] = storage.storage_space, formatted_ing, storage.temperature
-                else:
+                except: #noqa
                     formatted_storage[storage_type] = storage.storage_space, formatted_ing, None
 
         formatted_data = {

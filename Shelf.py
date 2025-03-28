@@ -1,5 +1,5 @@
 from Ingredient import Ingredient
-from datetime import date
+from datetime import datetime
 
 class Shelf():
     """A shelf in which ingredients can be stored.
@@ -7,7 +7,7 @@ class Shelf():
     def __init__(self, storage_space):
         """Sets up a shelf object. Arg: storage_space (int) - Amount of storage the shelf has."""
         self.storage_space = storage_space
-        self._ingredients: list[str, int, date, int] = []
+        self._ingredients: list[str, int, datetime, int] = []
 
     def in_shelf(self, check_ingredient: Ingredient):
         """Checks if a certain ingredient is already in the shelf."""
@@ -62,7 +62,7 @@ class Shelf():
         """
         expired_ingredients = []
         refrigerator_ingredients = []
-        today = date.today()
+        today = datetime.today()
         for ingredient in self._ingredients:
             if ingredient.expiration_date < today:
                 expired_ingredients.append(ingredient)
