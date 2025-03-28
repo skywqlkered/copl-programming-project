@@ -14,45 +14,43 @@ class User:
         Attributes:
             mealplan (MealPlan): The meal plan of the user.
             _shoppinglist (Shoppinglist): The shopping list of the user.
-            _recipebooks (list[RecipeBook]): The recipe books of the user.
+            _recipebook (list[RecipeBook]): The recipe books of the user.
             refrigerator Refrigerator: The refrigerators of the user.
         """
 
         self.name = name
         self.mealplan: MealPlan = MealPlan()
         self._shoppinglist: Shoppinglist = Shoppinglist()
-        self.__recipebooks: list[RecipeBook] = []
-        self.storage: dict[list[Refrigerator], list[Shelf]] = {"refrigerators": [], "shelves": []}
+        self.__recipebook: RecipeBook = RecipeBook()
+        self.storage: dict[Refrigerator, Shelf] = {"refrigerator": None, "shelf": None}
 
-        self.add_recipebook(RecipeBook()) # the default recipe book to save misc recipes
-
-    def add_recipebook(self, recipebook: RecipeBook):
+    def add_recipebook(self, new_recipbebook: RecipeBook):
         """
         Adds a recipebook to the user's collection of recipebooks.
 
         Args:
             recipebook (RecipeBook): The recipebook to add.
         """
-        if recipebook not in self.__recipebooks:
-            self.__recipebooks.append(recipebook)
+        if self.recipebook != new_recipbebook:
+            self.storage["shelf"] = new_recipbebook
 
 
-    def rem_recipebook(self, recipebook: RecipeBook):
+    def rem_recipebook(self, new_recipebook: RecipeBook):
         """
         Removes a recipebook from the user's collection of recipebooks.
 
         Args:
             recipebook (RecipeBook): The recipebook to remove.
         """
-        if recipebook in self._recipebooks:
-            self._recipebooks.remove(recipebook)
+        if self.recipebook == new_recipebook:
+            self.storage["shelf"] = None
 
     @property
-    def recipebooks(self):
+    def recipebook(self):
         """
         Returns a list of all recipebooks associated with the user.
         """
-        return self.__recipebooks
+        return self.__recipebook
 
     def has_item(self, item_name: str = None):
         """
@@ -83,24 +81,12 @@ class User:
 
         
     def add_refrigerator(self, refrigerator: Refrigerator):
-        """
-        Adds a refrigerator to the user's collection of refrigerators.
-
-        Args:
-            refrigerator (Refrigerator): The refrigerator to add.
-        """
-        if refrigerator not in self.storage["refrigerators"]:
-            self.storage["refrigerators"].append(refrigerator)
+        if self.storage["refrigerator"] != refrigerator:
+            self.storage["refrigerator"] = refrigerator
 
     def rem_refrigerator(self, refrigerator: Refrigerator):
-        """
-        Removes a refrigerator from the user's collection of refrigerators.
-
-        Args:
-            refrigerator (Refrigerator): The refrigerator to remove.
-        """
-        if refrigerator in self.storage["refrigerators"]:
-            self.storage["refrigerators"].remove(refrigerator)
+        if self.storage["refrigerator"] == refrigerator:
+            self.storage["refrigerator"] = None
 
     def add_shelf(self, shelf: Shelf):
         """
@@ -109,8 +95,8 @@ class User:
         Args:
             shelf (Shelf): The shelf to add.
         """
-        if shelf not in self.storage["shelves"]:
-            self.storage["shelves"].append(shelf)
+        if self.storage["shelf"] != shelf:
+            self.storage["shelf"] = shelf
         
 
     def rem_shelf(self, shelf: Shelf):
@@ -120,6 +106,5 @@ class User:
         Args:
             shelf (Shelf): The shelf to remove.
         """
-        if shelf in self.storage["shelves"]:
-            self.storage["shelves"].remove(shelf)
-
+        if self.storage["shelf"] == shelf:
+            self.storage["shelf"] = None

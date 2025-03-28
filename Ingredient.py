@@ -67,8 +67,8 @@ class Ingredient:
     
     def __eq__(self, another):
         """Checks if the ingredient is the same.
-        For this everything should be equal except the quantity."""
-        if self.name == another.name and self.expiration_date == another.expiration_date and self.temperature == another.temperature:
+        For this the name should be the same."""
+        if self.name == another.name:
             return True
         else:
             return False

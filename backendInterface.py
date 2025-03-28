@@ -7,7 +7,7 @@ from Shelf import Shelf
 from Recipe import Recipe # add ingredient, remove ingredient
 from Ingredient import Ingredient # add item, remove item
 from MealPlan import MealPlan # add recipe, remove recipe
-from datetime import datetime
+from datetime import datetime, date
 
 class Backend:
     def __init__(self):
@@ -16,7 +16,7 @@ class Backend:
     def save_userinstance(self):
         user = self.user
         a = Json()
-        a.write_data(user.name, user.mealplan, user._shoppinglist.ingredients, user.recipebooks, user.storage)
+        a.write_data(user.name, user.mealplan, user._shoppinglist.ingredients, user.recipebook, user.storage)
 
     def get_userinstance(self, name: str):
         a = Json()
@@ -56,7 +56,7 @@ class Backend:
             plan.add_meal(day, recipe)
         user.mealplan = plan
 
-    def _add_recipebooks_to_user(self, user: User):
+    def _add_recipebook_to_user(self, user: User):
         """
         Adds recipe books to a user by creating RecipeBook instances from provided data and adding them to the user's collection.
 
@@ -69,7 +69,7 @@ class Backend:
         data = self.get_userinstance(user.name)
 
         recipbook = RecipeBook()
-        for key,value in data["recipebooks"].items():
+        for key,value in data["recipebook"].items():
             recipename = key
             cookingtime = value[0]
             peoplecount = value[1] 
@@ -101,7 +101,7 @@ class Backend:
     def _set_storage_of_user(self, user: User):
         userdata: dict = self.get_userinstance(user.name)
         for storage_type, value in userdata["storage"].items():
-            if storage_type == "refrigerators":	
+            if storage_type == "refrigerator":	
                 used_space = 0                
                 if len(value) > 0:
                     for name, ingredient in value[1].items():
@@ -113,7 +113,7 @@ class Backend:
                     a.add_ingredient(ing)
                     a.temperature = value[2]
                     user.add_refrigerator(a)
-            elif storage_type == "shelves":
+            elif storage_type == "shelf":
                 used_space = 0
                 if len(value) > 0:
                     for name, ingredient in value[1].items():
@@ -127,7 +127,7 @@ class Backend:
 
     def setup_all(self, user: User):
         self._set_meanplan_of_user(user)
-        self._add_recipebooks_to_user(user)
+        self._add_recipebook_to_user(user)
         self._set_shoppinglist_of_user(user)
         self._set_storage_of_user(user)
 
@@ -204,11 +204,27 @@ class Backend:
             print("\nPlease enter a valid number\n")
             return False
 
+    def int_value_try(self, intinput: str, min_value, max_value):
+        try:
+            int_value = int(intinput)
+        except ValueError:
+            print("\nPlease enter a valid number\n")
+            return False
+        if int_value >= min_value and int_value <= max_value:
+            return int_value
+        else:
+            print(f"\n Please enter a number between {min_value} and {max_value}\n")
     def add_recipe_to_recipebook(self):
         print("What recipe would you like to add?")
-        recipes = self.list_all_recipes(True)
-        for  i, recipe in enumerate(recipes):
+        recipes: list[Recipe] = self.list_all_recipes(True)
+        for i, recipe in enumerate(recipes):
             print(f"{i+1}. {recipe}")
+
+        while True:
+            choice = input("Enter the number of the recipe you want to add: ")
+            if choice in [str(i) for i in range(1, len(recipes) + 1)]:
+                break
+        self.user.recipebook.add_recipe(recipes[int(choice) - 1])
 
     def remove_recipe_from_recipebook(self):
         print("What recipe would you like to remove?")
@@ -220,20 +236,24 @@ class Backend:
             choice = input("Enter the number of the recipe you want to remove: ")
             if choice in [str(i) for i in range(1, len(recipes) + 1)]:
                 break
-
-        
-        self.user.recipebooks[0].remove_recipe(recipes[int(choice) - 1])
+        self.user.recipebook.remove_recipe(self.user.recipebook.list_recipes()[int(choice) - 1].name)
 
     def find_recipe_by_name(self):
-        pass
+        recipname = input("Enter the name of the recipe you want to search for: ")
+        return self.user.recipebook.find_recipe(recipname)
 
     def find_recipe_by_ingredient(self):
-        pass
+        ingname = input("Enter the name of the ingredient you want to search for : ")
+        return self.user.recipebook.find_recipe_by_ingredient(ingname)
+    
+    def find_recipe_by_time(self, time=None):
+        while not time:
+            time = input("Enter the time you want to search for: ")
+            time = self.int_try(time)
+        return self.user.recipebook.find_recipe_by_time(time)
 
-    def find_recipe_by_cooking_time(self):
-        pass
 
-    def list_all_recipes(self, boolean = None):
+    def list_all_recipes(self) -> list[Recipe]:
         """
         Lists all recipes in the recipe book.
 
@@ -243,17 +263,128 @@ class Backend:
         Returns:
             list: A list of recipe names.
         """
-        
-        if boolean: # will list all unused recipes in the recipe book
-            return [recipe.name for recipe in self.user.recipebooks[0]]
-        
         full_list = []
-        for book in self.user.recipebooks:
-            for recipename in book.list_recipes():
-                full_list.append(recipename)
+        for recipe in self.user.recipebook.recipes:
+            full_list.append(recipe)
         return full_list
     
+    def add_shelf(self, storage_space = None):
+        while not storage_space:
+            print("Enter storage space of shelf:")
+            storage_space = self.int_try(input())
+        shelf = Shelf(storage_space)
+        self.user.add_shelf(shelf)
 
+    def add_refrigerator(self, storage_space = None, temperature = None):
+        while not storage_space:
+            print("Enter storage space of refrigerator:")
+            storage_space = self.int_value_try(input(), 0, 500)
+        while not temperature:
+            print("Enter temperature of the refrigerator:")
+            temperature = self.int_value_try(input(), 0, 8)
+        refrigerator = Refrigerator(storage_space)
+        refrigerator.temperature(temperature)
+        self.user.add_refrigerator(refrigerator)
+
+    def add_ingredient_storage(self, temperature = None, date = None):
+        ingredient = self.ingredient_maker()
+        while not temperature:
+            print("Temperature at which the ingredient should be kept: ")
+            temperature = self.int_value_try(input(), 0, 30)
+        ingredient.temperature = temperature
+        while not date:
+            print("Expiration date:")
+            year = input("Year: ")
+            month = input("Month: ")
+            day = input("Day: ")
+            try:
+                ingredient.expiration_date = datetime.strptime(f"{year}-{month}-{day}", "%Y-%m-%d")
+            except: #noqa
+                print("\nEnter valid experation date.\n")
+        
+        if ingredient.temperature:
+            try:
+                self.user.storage["refrigerator"].add_ingredient(ingredient)
+                print("Ingredient added to refrigerator.")
+            except ValueError:
+                try:
+                    self.user.storage["shelf"].add_ingredient(ingredient)
+                    print("Ingredient added to shelf.")
+                except ValueError:
+                    print("Shelf is full.")
+
+    def remove_ingredient_from_storage(self):
+        ingredient = self.ingredient_maker()
+        self.user.storage["shelf"].remove_ingredient(ingredient)
+
+    def check_bad_ingredients(self):
+        #shelf
+        expired_ingredients, refrigerator_ingredients = self.user.storage["refrigerator"].bad_ingredients()
+        print("Expired ingredients in shelf:")
+        for ingredient in expired_ingredients():
+            print(ingredient)
+        print("Ingredients in shelf that should be in refrigerator:")
+        for ingredient in refrigerator_ingredients:
+            print(ingredient)
+        
+        #refrigerator
+        bad_ingredients = self.user.storage["refrigerator"].bad_ingredients()
+        print("Expired ingredients in refrigerator:")
+        for ingredient in bad_ingredients:
+            print(ingredient)
+
+    def create_mealplan(self):
+        days = input("Enter the number of days you want to plan: ")
+        self.user.mealplan = MealPlan(days)
+
+        while True:
+            choice = input("Would you like to add a recipe to your mealplan? (y/n): ")
+            if choice.lower() == "y":
+                self.add_recipe_to_mealplan()
+            elif choice.lower() == "n":
+                break
+    
+    def add_recipe_to_mealplan(self):
+        choice = input("How would you like to add a recipe:\n1. By name\n2. By ingredient\n3. By time\n")
+        while True:
+            if choice == "1":
+                recipe = self.find_recipe_by_name()
+                break
+            elif choice == "2":
+                recipe = self.find_recipe_by_ingredient()
+                break
+            elif choice == "3":
+                recipe = self.find_recipe_by_time()
+                break
+        
+        self.user.mealplan.add_recipe(recipe)
+
+    def remove_recipe_from_mealplan(self):
+        found_recipe = self.find_recipe_by_name()
+        removalday = None
+        for day, recipe in self.user.mealplan.meals.items():
+            if recipe.name == found_recipe.name:
+                removalday = day
+                break
+        if removalday:
+            self.user.mealplan.meals[removalday] = None
+
+        else:
+            print("Recipe not found in mealplan.")
+    
+    def list_all_mealplans(self):
+        print(self.user.mealplan)
+
+    def generate_shoppinglist(self):
+        print(self.user.mealplan.generate_shopping_list())
+
+    def add_ingredient_shopping_list(self):
+        ingredient = self.ingredient_maker()
+        self.user._shoppinglist.add_ingredient(ingredient, ingredient.quantity)
+    
+    def remove_ingredient_shopping_list(self):
+        ingredient = self.ingredient_maker()
+        self.user._shoppinglist.rem_ingredient(ingredient.name, ingredient.quantity)
 
     if __name__ == "__main__":
         # a = Interface()

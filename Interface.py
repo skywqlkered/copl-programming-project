@@ -81,7 +81,6 @@ class Interface(Backend):
             self.exit_choise() 
 
     def recipe_choice(self, choice = None):
-        
         print("1. Create a recipe")
         print("2. Add a recipe to a recipebook")
         print("3. Remove a recipe from a recipebook")
@@ -97,7 +96,7 @@ class Interface(Backend):
 
         if choice == 1:
             r = self.create_recipe()
-            self.user.recipebooks[0].add_recipe(r)
+            self.user.recipebook[0].add_recipe(r)
             print(f"\nRecipe {r.name} created!\n")
             self.recipe_choice()
         elif choice == 2:
@@ -109,7 +108,7 @@ class Interface(Backend):
                     break
                 elif choise == 2:
                     r = self.create_recipe()
-                    self.user.recipebooks[0].add_recipe(r)
+                    self.user.recipebook[0].add_recipe(r)
                     print(f"\nRecipe {r.name} created!\n")
                     self.recipe_choice(2)
                     break
@@ -120,14 +119,19 @@ class Interface(Backend):
         
         elif choice == 3:
             self.remove_recipe_from_recipebook()
+            self.recipe_choice()
         elif choice == 4:
             self.find_recipe_by_name()
+            self.recipe_choice()
         elif choice == 5:
             self.find_recipe_by_ingredient()
+            self.recipe_choice()
         elif choice == 6:
             self.find_recipe_by_cooking_time()
+            self.recipe_choice()
         elif choice == 7:
             all = self.list_all_recipes()
+            self.recipe_choice()
             print("\nRecipe list:")
             for recipe in all:
                 print(f"\t{recipe}")
@@ -138,17 +142,93 @@ class Interface(Backend):
             self.user_choice()
         elif choice == 9:
             self.exit_choise()
-
     
 
-    def storage_choice(self):
-        pass
+    def storage_choice(self, choice=None):
+        print("1. Create storage")
+        print("2. Add ingredient to storage")
+        print("3. Remove ingredient from storage")
+        print("4. Check for bad ingredients")
+        print("5. Return to user menu")
+        print("6. Exit")
+        if not choice:
+            choice = input("Enter your choice: ")
+            choice = self.choice_loop(choice, 6)
+        if choice == 1:
+            print("1. Add refrigerator")
+            print("2. Add shelf")
+            choice = None
+            if not choice:
+                choice = input("Enter your choice: ")
+                choice = self.choice_loop(choice, 2)
+            if choice == 1:
+                self.add_refrigerator()
+            elif choice ==2:
+                self.add_shelf()
+            self.storage_choice()
+        elif choice ==2:
+            self.add_ingredient_storage()
+            self.storage_choice()
+        elif choice ==3:
+            self.remove_ingredient_from_storage()
+            self.storage_choice()
+        elif choice ==4:
+            self.check_bad_ingredients()
+            self.storage_choice()
+        elif choice ==5:
+            self.user_choice()
+        elif choice ==6:
+            self.exit_choise()
 
     def mealplan_choice(self):
-        pass
+        print("1. Create a mealplan")
+        print("2. Add a recipe to a mealplan")
+        print("3. Remove a recipe from a mealplan")
+        print("4. List all mealplans")
+        print("5. Generate a shoppinglist")
+        print("6. Return to user menu")
+        print("7. Exit")
+
+        choice = input("Enter your choice: ")   
+        choice = self.choice_loop(choice, 7)
+
+        if choice == 1:
+            self.create_mealplan()
+        elif choice == 2:
+            self.add_recipe_to_mealplan()
+        elif choice == 3:
+            self.remove_recipe_from_mealplan()
+        elif choice == 4:
+            self.list_all_mealplans()
+        elif choice == 5:
+            self.generate_shoppinglist()
+        elif choice == 6:
+            self.user_choice()
+        elif choice == 7:
+            self.exit_choise()
+        self.mealplan_choice()
 
     def shoppinglist_choice(self):
-        pass
+        print("1. Add ingredient")
+        print("2. Remove ingredient")
+        print("3. Print shopping list")
+        print("4. Return to user menu")
+        print("5. Exit")
+
+        choice = input("Enter your choice: ")
+        choice = self.choice_loop(choice, 5)
+
+        if choice ==1:
+            self.add_ingredient_shopping_list
+        elif choice ==2:
+            self.remove_ingredient_shopping_list
+        elif choice ==3:
+            print(self.user._shoppinglist)
+        elif choice ==4:
+            self.user_choice()
+        elif choice ==5:
+            self.exit_choise()
+        self.shoppinglist_choice()
 
     def exit_choise(self):
         """

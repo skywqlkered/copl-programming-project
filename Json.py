@@ -41,7 +41,7 @@ class Json:
         user = args[0][0]
         mealprep = args[0][1]
         shoppinglist = args[0][2]
-        recipebooks = args[0][3]
+        recipebook = args[0][3]
         storage = args[0][4]
 
         formatted_meanplan = {}
@@ -56,29 +56,27 @@ class Json:
             formattted_shoppinglist[storage_type] = [value[0][0], (str(value[0][1])).split(" ")[0], value[0][2]], value[1]
 
         formatted_recipebook = {}
-        for recipebook in recipebooks:
-            for recipe in recipebook.recipes:
-                if recipe:
-                    usable_recpipe = recipebook.recipes[recipe]
-                    formatted_recipebook[recipebook.recipes[recipe].name] = usable_recpipe.cooking_time, usable_recpipe.people_count, usable_recpipe.ingredients(), usable_recpipe.instructions
+        for recipe in recipebook.recipes:
+            if recipe:
+                usable_recpipe = recipebook.recipes[recipe]
+                formatted_recipebook[recipebook.recipes[recipe].name] = usable_recpipe.cooking_time, usable_recpipe.people_count, usable_recpipe.ingredients(), usable_recpipe.instructions
 
-        formatted_storage = {"refrigerators": [], "shelves": []}         
-        for storage_type, value in storage.items(): 
-            for fridge in value:
-                print(value[0])
-                formatted_ing = {}
-                for ingredient in fridge._ingredients:
+        formatted_storage = {"refrigerator": [], "shelf": []}         
+        for storage_type, storage in storage.items():
+            formatted_ing = {}
+            if storage:
+                for ingredient in storage._ingredients:
                     formatted_ing[ingredient.name] = [ingredient.temperature, (str(ingredient.expiration_date)).split(" ")[0], ingredient.quantity]
-                if fridge.temperature:
-                    formatted_storage[storage_type] = fridge.storage_space, formatted_ing, fridge.temperature
+                if storage.temperature:
+                    formatted_storage[storage_type] = storage.storage_space, formatted_ing, storage.temperature
                 else:
-                    formatted_storage[storage_type] = fridge.storage_space, formatted_ing, None
+                    formatted_storage[storage_type] = storage.storage_space, formatted_ing, None
 
         formatted_data = {
             "name": user,
             "mealplan": formatted_meanplan,
             "shoppinglist": formattted_shoppinglist,
-            "recipebooks": formatted_recipebook,
+            "recipebook": formatted_recipebook,
             "storage": formatted_storage
         }
         return json.dumps(formatted_data, indent=4)
