@@ -19,8 +19,8 @@ class User:
         """
 
         self.name = name
-        self.mealplan: MealPlan = None
-        self._shoppinglist: Shoppinglist = None
+        self.mealplan: MealPlan = MealPlan()
+        self._shoppinglist: Shoppinglist = Shoppinglist()
         self.__recipebooks: list[RecipeBook] = []
         self.storage: dict[list[Refrigerator], list[Shelf]] = {"refrigerators": [], "shelves": []}
 

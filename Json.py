@@ -45,6 +45,8 @@ class Json:
         storage = args[0][4]
 
         formatted_meanplan = {}
+        if not mealprep: # if the meal plan is empty, return an empty dictionary
+            return formatted_meanplan
         for day, recipe in mealprep.meals.items():
             if recipe:
                 formatted_meanplan[day] = recipe.name, recipe.cooking_time, recipe.people_count, recipe.ingredients(), recipe.instructions

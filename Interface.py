@@ -87,7 +87,7 @@ class Interface(Backend):
         print("3. Remove a recipe from a recipebook")
         print("4. Find a recipe by name")
         print("5. Search for a recipe by an ingredient")
-        print("6. Fnd a recipe under a certain cooking time")
+        print("6. Find a recipe under a certain cooking time")
         print("7. List all recipes")
         print("8. Return to user menu")
         print("9. Exit"	)
