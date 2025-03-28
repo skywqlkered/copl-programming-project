@@ -1,0 +1,64 @@
+{
+    "Julian": {
+        "name": "Julian",
+        "mealplan": {
+            "Monday": [
+                "Bananasplit",
+                1,
+                6,
+                {
+                    "Banana": 6
+                },
+                [
+                    "Eat"
+                ]
+            ]
+        },
+        "shoppinglist": {
+            "Banana": [
+                [
+                    Infinity,
+                    "2025-03-28",
+                    4
+                ],
+                4
+            ]
+        },
+        "recipebook": {
+            "Bananasplit": [
+                1,
+                6,
+                {
+                    "Banana": 6
+                },
+                [
+                    "Eat"
+                ]
+            ]
+        },
+        "storage": {
+            "refrigerator": [
+                452,
+                {
+                    "Banana": [
+                        4,
+                        "2025-12-04",
+                        48
+                    ]
+                },
+                4
+            ],
+            "shelf": [
+                448,
+                {
+                    "spoiled milk": [
+                        6,
+                        "2025-12-04",
+                        2
+                    ]
+                },
+                null
+            ]
+        }
+    }
+}
