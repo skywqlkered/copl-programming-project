@@ -383,7 +383,7 @@ class Backend:
     
     def add_recipe_to_mealplan(self):
         daychoice = input("For which day would you like to add a recipe: ")
-        while daychoice not in self.user.mealplan.meals.keys():
+        while daychoice.lower() not in [x.lower() for x in self.user.mealplan.meals.keys()]:
             daychoice = input("Enter a valid day: ")
         
         choice = input("How would you like to add a recipe:\n1. By name\n2. By ingredient\n3. By time\n")
@@ -398,7 +398,11 @@ class Backend:
                 recipe = self.find_recipe_by_time()
                 break
         
-        self.user.mealplan.add_meal(recipe)
+        daychoice = daychoice.lower().capitalize()
+        if self.user.mealplan.meals[daychoice]:
+            print("The is already a recipe assigned to this day.")
+            return
+        self.user.mealplan.add_meal(daychoice, recipe)
 
     def remove_recipe_from_mealplan(self):
         found_recipe = self.find_recipe_by_name()
