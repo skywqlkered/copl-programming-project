@@ -85,9 +85,9 @@ class Shoppinglist:
         """
         return_str = ""
         if len(self.ingredients) == 0:
-            return "Wow, such empty"
+            return "Your shoppinglist is empty"
         for i in range(len(self.ingredients)):
-            return_str += f"{list(self.ingredients.keys())[i]}: {list(self.ingredients.values())[0][1]}, "
+            return_str += f"{list(self.ingredients.keys())[i]}: {list(self.ingredients.values())[i][1]}, "
         return f"Shoppinglist: {return_str}"
     
 

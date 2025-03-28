@@ -382,6 +382,9 @@ class Backend:
                 break
     
     def add_recipe_to_mealplan(self):
+        if len([x.lower() for x in self.user.mealplan.meals.keys()]) == 0:
+            print("\nYou have no mealplan yet.\n")
+            return
         daychoice = input("For which day would you like to add a recipe: ")
         while daychoice.lower() not in [x.lower() for x in self.user.mealplan.meals.keys()]:
             daychoice = input("Enter a valid day: ")
@@ -398,11 +401,18 @@ class Backend:
                 recipe = self.find_recipe_by_time()
                 break
         
+        if not recipe:
+            print("Recipe not found.")
+            return
+        
         daychoice = daychoice.lower().capitalize()
         if self.user.mealplan.meals[daychoice]:
             print("The is already a recipe assigned to this day.")
             return
+    
         self.user.mealplan.add_meal(daychoice, recipe)
+        if self.user.mealplan.meals[daychoice]:
+            print("Recipe added to mealplan.")
 
     def remove_recipe_from_mealplan(self):
         found_recipe = self.find_recipe_by_name()
@@ -413,9 +423,9 @@ class Backend:
                 break
         if removalday:
             self.user.mealplan.meals[removalday] = None
-
+            print(f"Recipe {found_recipe.name} removed from mealplan.")
         else:
-            print("Recipe not found in mealplan.")
+            print(f"Recipe {found_recipe.name} not found in mealplan.")
     
     def list_all_mealplans(self):
         print(self.user.mealplan)
@@ -425,12 +435,16 @@ class Backend:
 
     def add_ingredient_shopping_list(self):
         ingredient = self.ingredient_maker()
+        print(ingredient)
         self.user._shoppinglist.add_ingredient(ingredient, ingredient.quantity)
     
     def remove_ingredient_shopping_list(self):
         ingredient = self.ingredient_maker()
-        self.user._shoppinglist.rem_ingredient(ingredient.name, ingredient.quantity)
-
+        try:
+            self.user._shoppinglist.rem_ingredient(ingredient.name, ingredient.quantity)
+            print("\nIngredient removed from shoppinglist.\n")
+        except KeyError:
+            print("\nIngredient not found in shoppinglist.\n")
     if __name__ == "__main__":
         # a = Interface()
 

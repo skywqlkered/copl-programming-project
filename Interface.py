@@ -207,7 +207,7 @@ class Interface(Backend):
             self.exit_choise()
 
     def mealplan_choice(self):
-        print("1. Create a mealplan")
+        print("1. Create new mealplan")
         print("2. Add a recipe to a mealplan")
         print("3. Remove a recipe from a mealplan")
         print("4. List all mealplans")
